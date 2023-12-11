@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  poc1:
+    build:
+      context: .
+      dockerfile: ./services/poc1/Dockerfile
+    container_name: poc1
+    ports:
+      - "3001:3000"
+    networks:
+      - poc-network
+
+networks:
+  poc-network:
+    driver: bridge
