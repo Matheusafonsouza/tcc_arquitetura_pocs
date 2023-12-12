@@ -1,10 +1,9 @@
 import requests
 
+from ports.http import HTTPPort
 
-class HTTPRequestAdapter:
-    def __init__(self, base_url):
-        self.base_url = base_url
 
+class HTTPRequestAdapter(HTTPPort):
     def request(self, method, route, data=None):
         try:
             response = requests.request(
