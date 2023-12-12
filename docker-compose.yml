@@ -1,16 +1,42 @@
 version: "3"
 
 services:
-  poc1:
+  server1:
     build:
       context: .
-      dockerfile: ./services/poc1/Dockerfile
-    container_name: poc1
+      dockerfile: services/server1/Dockerfile
     ports:
-      - "3001:3000"
+      - "8000:8000"
+    volumes:
+      - "./:/code/"
+    container_name: server1
     networks:
-      - poc-network
+      - server-network
+    
+  server2:
+    build:
+      context: .
+      dockerfile: services/server2/Dockerfile
+    ports:
+      - "8001:8000"
+    volumes:
+      - "./:/code/"
+    container_name: server2
+    networks:
+      - server-network
+
+  server3:
+    build:
+      context: .
+      dockerfile: services/server3/Dockerfile
+    ports:
+      - "8002:8000"
+    volumes:
+      - "./:/code/"
+    container_name: server3
+    networks:
+      - server-network
 
 networks:
-  poc-network:
+  server-network:
     driver: bridge
