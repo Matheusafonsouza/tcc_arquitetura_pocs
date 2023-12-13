@@ -8,11 +8,11 @@ def ping():
 
 
 def ping_server(
-    HTTPAdapter: HTTPPort,
+    http_adapter: HTTPPort,
     server_url: str,
     route: str
 ):
-    response = HTTPAdapter(server_url).get(route)
+    response = http_adapter(server_url).get(route)
     return JSONResponse(
         status_code=response.get("status_code"),
         content=response.get("content"),

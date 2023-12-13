@@ -4,7 +4,7 @@ from ports.http import HTTPPort
 
 
 class HTTPRequestAdapter(HTTPPort):
-    def request(self, method, route, data=None):
+    def request(self, method: str, route: str, data: dict = None):
         try:
             response = requests.request(
                 method,
@@ -35,17 +35,17 @@ class HTTPRequestAdapter(HTTPPort):
                 }
             }
 
-    def get(self, route):
+    def get(self, route: str):
         return self.request("GET", route)
     
-    def post(self, route, data):
+    def post(self, route: str, data: dict):
         return self.request("POST", route, data=data)
     
-    def put(self, route, data):
+    def put(self, route: str, data: dict):
         return self.request("PUT", route, data=data)
     
-    def delete(self, route):
+    def delete(self, route: str):
         return self.request("DELETE", route)
     
-    def patch(self, route, data):
+    def patch(self, route: str, data: dict):
         return self.request("PATCH", route, data=data)
