@@ -7,8 +7,8 @@ WORKDIR /code
 
 ADD adapters /code/adapters/
 ADD ports /code/ports/
-ADD services/server1 /code/services/server1/
+ADD servers/server1 /code/servers/server1/
 
-RUN pip install --no-cache-dir -r /code/services/server1/requirements.txt
+RUN pip install --no-cache-dir -r /code/servers/server1/requirements.txt
 
-ENTRYPOINT ["python3", "/code/services/server1/main.py"]
+ENTRYPOINT ["python3", "/code/servers/server1/main.py"]
