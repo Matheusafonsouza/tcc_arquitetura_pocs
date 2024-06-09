@@ -3,12 +3,16 @@ from fastapi import FastAPI
 
 from common.service import ping, ping_server
 from adapters.http import HTTPRequestAdapter
+from common.amqp import get_rabbitmq_adapter
+
+
+amqp_adapter = get_rabbitmq_adapter()
+
 
 app = FastAPI()
 
-
 @app.get("/ping")
-def ping():
+def send_ping():
     return ping()
 
 
@@ -16,6 +20,7 @@ def ping():
 def ping_server_2():
     return ping_server(
         HTTPRequestAdapter,
+        amqp_adapter,
         "http://server2:8000",
         "/ping",
     )
@@ -25,6 +30,7 @@ def ping_server_2():
 def ping_server_3():
     return ping_server(
         HTTPRequestAdapter,
+        amqp_adapter,
         "http://server3:8000",
         "/ping",
     )

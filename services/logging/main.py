@@ -1,8 +1,20 @@
 import json
 
-from adapters.rabbitmq import RabbitMQAMQPAdapter
 from ports.amqp import AMQPPort
-from domain.service import log
+from common.database import get_mongo_database
+from common.amqp import get_rabbitmq_adapter
+from domain.repositories.log_repository import LogRepository
+
+
+log_repository = LogRepository(
+    adapter=get_mongo_database("logs")
+)
+
+
+def callback(channel, method, properties, body):
+    message = json.loads(body.decode("utf-8"))
+    print("INFO -> ", message)
+    log_repository.create(({"message": message}))
 
 
 class Worker:
@@ -13,23 +25,9 @@ class Worker:
         self.adapter.receive_messages()
 
 
-def callback(channel, method, properties, body):
-    message = json.loads(body.decode("utf-8"))
-    print("INFO -> ", message)
-    log(message)
-
-
 def main():
     Worker(
-        adapter=RabbitMQAMQPAdapter(
-            host="rabbitmq",
-            port=5672,
-            username="test",
-            password="test",
-            virtual_host="/",
-            topic="test",
-            callback=callback,
-        )
+        adapter=get_rabbitmq_adapter(callback),
     ).handle_message()
 
 
