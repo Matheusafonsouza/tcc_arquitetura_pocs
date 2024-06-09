@@ -12,11 +12,11 @@ def ping():
     return service.ping()
 
 
-@app.get("/ping-server-2")
-def ping_server_2():
+@app.get("/ping-server-1")
+def ping_server_1():
     return service.ping_server(
         HTTPRequestAdapter,
-        "http://server2:8000",
+        "http://server1:8000",
         "/ping",
     )
 
