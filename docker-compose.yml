@@ -37,6 +37,20 @@ services:
     networks:
       - server-network
 
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: database
+    logging:
+      driver: none
+    networks:
+      - server-network
+
 networks:
   server-network:
     driver: bridge

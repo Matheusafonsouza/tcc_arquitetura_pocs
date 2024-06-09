@@ -29,6 +29,10 @@ def ping_server_3():
         "/ping",
     )
 
+@app.get("/users/{user_id}")
+def ping_server_3(user_id: int):
+    return service.get_user(user_id)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
