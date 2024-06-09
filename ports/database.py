@@ -5,7 +5,7 @@ class DatabasePort:
     def update(self, data: dict):
         raise NotImplementedError
     
-    def delete(self, id: int):
+    def delete(self, id: str):
         raise NotImplementedError
     
     def get(self, where: dict):

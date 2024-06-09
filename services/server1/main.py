@@ -31,7 +31,7 @@ def ping_server_3():
 
 
 @app.get("/users/{user_id}")
-def get_user(user_id: int):
+def get_user(user_id: str):
     return service.get_user(user_id)
 
 
@@ -41,12 +41,12 @@ def create_user(payload: dict = Body(...)):
 
 
 @app.put("/users/{user_id}")
-def update_user(user_id: int, payload: dict = Body(...)):
+def update_user(user_id: str, payload: dict = Body(...)):
     return service.update_user(user_id, payload)
 
 
 @app.delete("/users/{user_id}")
-def delete_user(user_id: int):
+def delete_user(user_id: str):
     return service.delete_user(user_id)
 
 
