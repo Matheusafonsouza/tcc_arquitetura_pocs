@@ -1,6 +1,5 @@
-from fastapi.responses import JSONResponse
-
 from ports.http import HTTPPort
+from fastapi.responses import JSONResponse
 
 
 def ping():
