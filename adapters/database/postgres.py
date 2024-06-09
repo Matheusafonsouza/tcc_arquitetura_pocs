@@ -11,6 +11,7 @@ from sqlalchemy import (
     delete,
     update,
     create_engine,
+    literal_column,
 )
 
 from common.entities.user import User
@@ -40,23 +41,27 @@ class PostgresDatabase(DatabasePort):
         }.get(table)
 
     def create(self, data: dict):
-        operation = insert(self.table).values(**data)
+        operation = insert(self.table).values(**data).returning(literal_column("*"))
         cursor = self.__connection.execute(operation)
+        self.__connection.commit()
         result = cursor.fetchone()
-        return User(**result)
+        return User(*result)
     
     def update(self, id: int, data: dict):
         operation = update(self.table).where(self.table.c.id == id).values(**data)
         cursor = self.__connection.execute(operation)
-        result = cursor.fetchone()
-        return User(**result)
+        self.__connection.commit()
+        return self.get(id)
 
     def delete(self, id: int):
         operation = delete(self.table).where(self.table.c.id == id)
-        cursor = self.__connection.execute(operation)
+        self.__connection.execute(operation)
+        self.__connection.commit()
 
     def get(self, id: int):
         operation = select(self.table).where(self.table.c.id == id)
         cursor = self.__connection.execute(operation)
         result = cursor.fetchone()
-        return User(**result)
+        if not result:
+            return None
+        return User(*result)
