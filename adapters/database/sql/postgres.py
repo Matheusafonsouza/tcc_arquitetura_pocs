@@ -50,7 +50,7 @@ class PostgresDatabase(DatabasePort):
     
     def update(self, id: str, data: dict):
         operation = update(self.table).where(self.table.c.id == id).values(**data)
-        cursor = self.__connection.execute(operation)
+        self.__connection.execute(operation)
         self.__connection.commit()
         return self.get(id)
 
