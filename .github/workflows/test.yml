@@ -18,6 +18,6 @@ jobs:
       - name: Build databases and rabbitMQ
         run: docker-compose up -d postgres mongo rabbitmq
       - name: Run migrations
-        run: alembic upgrade head
+        run: docker compose up alembic
       - name: Run tests
         run: pytest

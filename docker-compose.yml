@@ -52,6 +52,17 @@ services:
     depends_on:
       - rabbitmq
 
+  alembic:
+    build:
+      context: .
+      dockerfile: services/server1/Dockerfile
+    volumes:
+      - "./:/code/"
+    container_name: alembic
+    entrypoint: bash -c "pip install -r services/server1/requirements.txt && alembic upgrade head"
+    networks:
+      - server-network
+
   postgres:
     image: postgres
     restart: always
