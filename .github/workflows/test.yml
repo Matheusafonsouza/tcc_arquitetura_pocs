@@ -1,4 +1,4 @@
-name: Test
+name: CI Pipeline
 on:
   push:
     branches:
@@ -6,18 +6,42 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  test:
+  tests:
     name: Run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Install dependencies for test
-        run: pip install pytest && pip install -r services/server1/requirements.txt
+        run: pip install pytest pytest-cov && pip install -r services/server1/requirements.txt
+
       - name: Build databases and rabbitMQ
         run: docker-compose up -d postgres mongo rabbitmq
+
       - name: Run migrations
         run: docker compose up alembic
+
       - name: Run tests
-        run: pytest
+        run: pytest -v --cov --cov-report=xml --cov-report=html
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage
+          path: htmlcov
+
+  sonarcloud:
+    needs: tests
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
