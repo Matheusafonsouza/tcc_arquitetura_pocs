@@ -4,7 +4,7 @@ services:
   server1:
     build:
       context: .
-      dockerfile: servers/server1/Dockerfile
+      dockerfile: services/server1/Dockerfile
     ports:
       - "8000:8000"
     volumes:
@@ -16,7 +16,7 @@ services:
   server2:
     build:
       context: .
-      dockerfile: servers/server2/Dockerfile
+      dockerfile: services/server2/Dockerfile
     ports:
       - "8001:8000"
     volumes:
@@ -28,7 +28,7 @@ services:
   server3:
     build:
       context: .
-      dockerfile: servers/server3/Dockerfile
+      dockerfile: services/server3/Dockerfile
     ports:
       - "8002:8000"
     volumes:
@@ -40,7 +40,7 @@ services:
   logging:
     build:
       context: .
-      dockerfile: servers/logging/Dockerfile
+      dockerfile: services/logging/Dockerfile
     ports:
       - "8003:8000"
     volumes:

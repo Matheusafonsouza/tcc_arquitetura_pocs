@@ -7,8 +7,8 @@ WORKDIR /code
 
 ADD adapters /code/adapters/
 ADD ports /code/ports/
-ADD servers/logging /code/servers/logging/
+ADD services/logging /code/services/logging/
 
-RUN pip install --no-cache-dir -r /code/servers/logging/requirements.txt
+RUN pip install --no-cache-dir -r /code/services/logging/requirements.txt
 
-ENTRYPOINT ["python3", "/code/servers/logging/main.py"]
+ENTRYPOINT ["python3", "/code/services/logging/main.py"]
