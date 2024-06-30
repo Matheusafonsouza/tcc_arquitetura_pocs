@@ -19,7 +19,6 @@ class HTTPRequestAdapter(HTTPPort):
         except (
             requests.exceptions.ConnectionError,
             requests.exceptions.Timeout,
-            requests.exceptions.RequestException,
         ) as e:
             return {
                 "status_code": 500,
