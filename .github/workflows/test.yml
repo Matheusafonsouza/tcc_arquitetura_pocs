@@ -1,0 +1,21 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install dependencies for test
+        run: pip install pytest && pip install -r services/server1/requirements.txt
+      - name: Build databases and rabbitMQ
+        run: docker-compose up -d postgres mongo rabbitmq
+      - name: Run tests
+        run: pytest
