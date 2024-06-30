@@ -17,7 +17,7 @@ class UserRepository:
     def delete(self, id: str) -> None:
         self.adapter.delete(id)
 
-    def get(self, id: str) -> User:
+    def get(self, id: str) -> User | None:
         user = self.adapter.get(id)
         if not user:
             return None
