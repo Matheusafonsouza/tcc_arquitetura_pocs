@@ -17,5 +17,7 @@ jobs:
         run: pip install pytest && pip install -r services/server1/requirements.txt
       - name: Build databases and rabbitMQ
         run: docker-compose up -d postgres mongo rabbitmq
+      - name: Run migrations
+        run: alembic upgrade head
       - name: Run tests
         run: pytest
