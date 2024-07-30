@@ -28,7 +28,7 @@ class User(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     def to_dict(self):
-        """Convert the User instance to a dictionary."""
+        """Convert instance to a dictionary."""
         return {
             'id': self.id,
             'name': self.name,
@@ -47,11 +47,51 @@ class Book(Base):
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
     def to_dict(self):
-        """Convert the User instance to a dictionary."""
+        """Convert instance to a dictionary."""
         return {
             'id': self.id,
             'title': self.title,
             'year': self.year,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
+    
+class Movie(Base):
+    __tablename__ = 'movies'
+    __table_args__ = {'schema': 'serviceTwoSchema'}
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+    def to_dict(self):
+        """Convert instance to a dictionary."""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'year': self.year,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
+    
+class TvShow(Base):
+    __tablename__ = 'tv_shows'
+    __table_args__ = {'schema': 'serviceThreeSchema'}
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    episodes = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+    def to_dict(self):
+        """Convert instance to a dictionary."""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'year': self.year,
+            'episodes': self.episodes,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
@@ -67,6 +107,8 @@ class PostgresDatabase(DatabasePort):
         return {
             "users": User,
             "books": Book,
+            "movies": Movie,
+            "tv_shows": TvShow,
         }.get(table)
 
     def create(self, data: dict):

@@ -11,21 +11,15 @@ from common.amqp import get_rabbitmq_adapter
 from common.repositories.user_repository import UserRepository
 from domain.repositories.book_repository import BookRepository
 
-# user_repository = UserRepository(
-#     adapter=get_postgres_database("users")
-# )
 
 user_repository = UserRepository(
-    adapter=get_mongo_database("commonSchema", "users")
+    adapter=get_postgres_database( "commonSchema", "users")
 )
 
 book_repository = BookRepository(
-    adapter=get_postgres_database( "books", "serviceOneSchema")
+    adapter=get_postgres_database("serviceOneSchema", "books")
 )
 
-# common_user_repository = UserRepository(
-#     adapter=get_mongo_database("commonSchema", "users")
-# )
 amqp_adapter = get_rabbitmq_adapter()
 
 
@@ -79,22 +73,22 @@ def delete_user(user_id: str):
 
 """Uses a isolated database schema"""
 @app.get("/books/{book_id}")
-def get_user(book_id: str):
+def get_book(book_id: str):
     return book_repository.get(book_id)
 
 
 @app.post("/books")
-def create_user(payload: dict = Body(...)):
+def create_book(payload: dict = Body(...)):
     return book_repository.create(payload)
 
 
 @app.put("/books/{book_id}")
-def update_user(book_id: str, payload: dict = Body(...)):
+def update_book(book_id: str, payload: dict = Body(...)):
     return book_repository.update(book_id, payload)
 
 
 @app.delete("/books/{book_id}")
-def delete_user(book_id: str):
+def delete_book(book_id: str):
     return book_repository.delete(book_id)
 
 if __name__ == "__main__":

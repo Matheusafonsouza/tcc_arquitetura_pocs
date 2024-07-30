@@ -12,6 +12,8 @@ engine = create_engine(DATABASE_URL, echo=True)
 with engine.connect() as conn:
     conn.execute(text('CREATE SCHEMA IF NOT EXISTS "commonSchema"'))
     conn.execute(text('CREATE SCHEMA IF NOT EXISTS "serviceOneSchema"'))
+    conn.execute(text('CREATE SCHEMA IF NOT EXISTS "serviceTwoSchema"'))
+    conn.execute(text('CREATE SCHEMA IF NOT EXISTS "serviceThreeSchema"'))
     conn.commit()  # Ensure changes are committed
 
 Base = declarative_base()
@@ -34,6 +36,25 @@ class Book(Base):
     year = Column(Integer, nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+class Movie(Base):
+  __tablename__ = 'movies'
+  __table_args__ = {'schema': 'serviceTwoSchema'}
+  id = Column(Integer, primary_key=True)
+  title = Column(String, nullable=False)
+  year = Column(Integer, nullable=False)
+  created_at = Column(DateTime, nullable=False, server_default=func.now())
+  updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+class TvShow(Base):
+  __tablename__ = 'tv_shows'
+  __table_args__ = {'schema': 'serviceThreeSchema'}
+  id = Column(Integer, primary_key=True)
+  title = Column(String, nullable=False)
+  year = Column(Integer, nullable=False)
+  episodes = Column(Integer, nullable=False)
+  created_at = Column(DateTime, nullable=False, server_default=func.now())
+  updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     
 # Create the tables
 Base.metadata.create_all(engine)

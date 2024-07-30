@@ -4,7 +4,7 @@ from adapters.database.sql.postgres import PostgresDatabase
 from adapters.database.nosql.mongo import MongoDatabase
 
 
-def get_postgres_database(table: str, schema: str) -> PostgresDatabase:
+def get_postgres_database(schema: str, table: str) -> PostgresDatabase:
     return PostgresDatabase(
         (
             f"postgresql://{environ['PG_USER']}:"

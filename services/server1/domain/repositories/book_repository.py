@@ -7,7 +7,6 @@ class BookRepository:
         self.adapter = adapter
 
     def create(self, data: Book) -> Book:
-        print("ADAPTER ADAPTER ADAPTER ADPTER")
         book = self.adapter.create(data)
         return Book(**book)
 

@@ -1,7 +1,8 @@
 import uvicorn
 
-from common.database import get_mongo_database
+from common.database import get_mongo_database, get_postgres_database
 from common.repositories.user_repository import UserRepository
+from domain.repositories.movie_repository import MovieRepository
 from fastapi import FastAPI, Body
 from common import common_service
 from common.common_service import ping, ping_server
@@ -13,7 +14,10 @@ app = FastAPI()
 amqp_adapter = get_rabbitmq_adapter()
 
 user_repository = UserRepository(
-    adapter=get_mongo_database("commonSchema", "users"))
+    adapter=get_postgres_database("commonSchema", "users"))
+
+movie_repository = MovieRepository(
+    adapter=get_postgres_database("serviceTwoSchema", "movies"))
 
 
 @app.get("/ping")
@@ -60,6 +64,27 @@ def update_user(user_id: str, payload: dict = Body(...)):
 @app.delete("/users/{user_id}")
 def delete_user(user_id: str):
     return common_service.delete_user(user_id, repository=user_repository)
+
+
+"""Uses a isolated database schema"""
+@app.get("/movies/{movie_id}")
+def get_movie(movie_id: str):
+    return movie_repository.get(movie_id)
+
+
+@app.post("/movies")
+def create_movie(payload: dict = Body(...)):
+    return movie_repository.create(payload)
+
+
+@app.put("/movies/{movie_id}")
+def update_movie(movie_id: str, payload: dict = Body(...)):
+    return movie_repository.update(movie_id, payload)
+
+
+@app.delete("/movies/{movie_id}")
+def delete_movie(movie_id: str):
+    return movie_repository.delete(movie_id)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
