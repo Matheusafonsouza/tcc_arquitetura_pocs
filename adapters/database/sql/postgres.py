@@ -1,68 +1,97 @@
 from sqlalchemy import (
-    Table,
     Column,
     MetaData,
     Integer,
+    String,
     Text,
     DateTime,
     func,
-    select,
-    insert,
-    delete,
-    update,
     create_engine,
-    literal_column,
 )
-from uuid import uuid4
 
-from common.entities.user import User
 from ports.database import DatabasePort
 
 metadata = MetaData()
 
-users = Table(
-    "users",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", Text, nullable=False),
-    Column("created_at", DateTime, nullable=False, server_default=func.now()),
-    Column("updated_at", DateTime, nullable=False, server_default=func.now(), onupdate=func.now()),
-)
 
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+Base = declarative_base()
+
+# Define the users table in commonSchema
+class User(Base):
+    __tablename__ = 'users'
+    __table_args__ = {'schema': 'commonSchema'}
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    def to_dict(self):
+        """Convert the User instance to a dictionary."""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
+
+# Define the books table in serviceOneSchema
+class Book(Base):
+    __tablename__ = 'books'
+    __table_args__ = {'schema': 'serviceOneSchema'}
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+    def to_dict(self):
+        """Convert the User instance to a dictionary."""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'year': self.year,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
 
 class PostgresDatabase(DatabasePort):
-    def __init__(self, database_uri: str, table: str):
+    def __init__(self, database_uri: str, table: str, schema: str):
         self.table = self.get_table(table)
         engine = create_engine(database_uri)
-        self.__connection = engine.connect()
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
     def get_table(self, table: str):
         return {
-            "users": users
+            "users": User,
+            "books": Book,
         }.get(table)
 
     def create(self, data: dict):
-        operation = insert(self.table).values(**data, id=uuid4()).returning(literal_column("*"))
-        cursor = self.__connection.execute(operation)
-        self.__connection.commit()
-        result = cursor.fetchone()
-        return result._mapping
-    
+        insert = self.table(**data)
+        self.session.add(insert)
+        self.session.commit()
+        return insert.to_dict()
+
     def update(self, id: str, data: dict):
-        operation = update(self.table).where(self.table.c.id == id).values(**data)
-        self.__connection.execute(operation)
-        self.__connection.commit()
-        return self.get(id)
+        record = self.session.query(self.table).filter(self.table.id == id).one_or_none()
+        if record:
+            for key, value in data.items():
+                setattr(record, key, value)
+            self.session.commit()
+            return record.id
+        return None
 
     def delete(self, id: str):
-        operation = delete(self.table).where(self.table.c.id == id)
-        self.__connection.execute(operation)
-        self.__connection.commit()
+        record = self.session.query(self.table).filter(self.table.id == id).one_or_none()
+        if record:
+            self.session.delete(record)
+            self.session.commit()
 
     def get(self, id: str):
-        operation = select(self.table).where(self.table.c.id == id)
-        cursor = self.__connection.execute(operation)
-        result = cursor.fetchone()
-        if not result:
+        record = self.session.query(self.table).filter(self.table.id == id).one_or_none()
+        if not record:
             return None
-        return result._mapping
+        return record.to_dict()

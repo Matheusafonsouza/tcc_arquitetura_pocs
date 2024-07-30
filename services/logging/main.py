@@ -7,7 +7,7 @@ from domain.repositories.log_repository import LogRepository
 
 
 log_repository = LogRepository(
-    adapter=get_mongo_database("logs")
+    adapter=get_mongo_database("logs_database", "logs")
 )
 
 

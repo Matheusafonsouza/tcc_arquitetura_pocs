@@ -32,4 +32,5 @@ def postgres_database():
     return PostgresDatabase(
         "postgresql://root:root@localhost:5432/database",
         "users",
+        "test"
     )

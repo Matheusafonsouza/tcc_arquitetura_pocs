@@ -7,6 +7,17 @@ services:
       dockerfile: services/server1/Dockerfile
     ports:
       - "8000:8000"
+    environment:
+      PG_PASS: root
+      PG_USER: root
+      PG_DB: database
+      PG_HOST: postgres
+      PG_PORT: 5432 
+      MONGO_USER: root
+      MONGO_PASS: example
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DATABASE: example
     volumes:
       - "./:/code/"
     container_name: server1
@@ -19,6 +30,17 @@ services:
       dockerfile: services/server2/Dockerfile
     ports:
       - "8001:8000"
+    environment:
+      PG_PASSWORD: root
+      PG_USER: root
+      PG_DB: database
+      PG_HOST: postgres
+      PG_PORT: 5432 
+      MONGO_USER: root
+      MONGO_PASS: example
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DATABASE: example
     volumes:
       - "./:/code/"
     container_name: server2
@@ -31,35 +53,57 @@ services:
       dockerfile: services/server3/Dockerfile
     ports:
       - "8002:8000"
+    environment:
+      PG_PASS: root
+      PG_USER: root
+      PG_DB: database
+      PG_HOST: localhost
+      PG_PORT: 5432 
+      MONGO_USER: root
+      MONGO_PASS: example
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DATABASE: example
     volumes:
       - "./:/code/"
     container_name: server3
     networks:
       - server-network
 
-  logging:
-    build:
-      context: .
-      dockerfile: services/logging/Dockerfile
-    ports:
-      - "8003:8000"
-    volumes:
-      - "./:/code/"
-    restart: on-failure:10
-    container_name: logging
-    networks:
-      - server-network
-    depends_on:
-      - rabbitmq
+  # logging:
+  #   build:
+  #     context: .
+  #     dockerfile: services/logging/Dockerfile
+  #   ports:
+  #     - "8003:8000"
+  #   environment:
+  #     PG_PASS: root
+  #     PG_USER: root
+  #     PG_DB: database
+  #     PG_HOST: localhost
+  #     PG_PORT: 5432 
+  #     MONGO_USER: root
+  #     MONGO_PASS: example
+  #     MONGO_HOST: mongo
+  #     MONGO_PORT: 27017
+  #     MONGO_DATABASE: example
+  #   volumes:
+  #     - "./:/code/"
+  #   restart: on-failure:10
+  #   container_name: logging
+  #   networks:
+  #     - server-network
+  #   depends_on:
+  #     - rabbitmq
 
-  alembic:
+  tables:
     build:
       context: .
       dockerfile: services/server1/Dockerfile
     volumes:
       - "./:/code/"
-    container_name: alembic
-    entrypoint: bash -c "pip install -r services/server1/requirements.txt && alembic upgrade head"
+    container_name: tables
+    entrypoint: bash -c "pip install -r services/server1/requirements.txt && python adapters/database/sql/create_table.py"
     networks:
       - server-network
 
@@ -105,17 +149,17 @@ services:
     networks:
       - server-network
 
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: rabbitmq
-    ports:
-        - 5672:5672
-        - 15672:15672
-    volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-    networks:
-      - server-network
+  # rabbitmq:
+  #   image: rabbitmq:3-management-alpine
+  #   container_name: rabbitmq
+  #   ports:
+  #       - 5672:5672
+  #       - 15672:15672
+  #   volumes:
+  #       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+  #       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  #   networks:
+  #     - server-network
 
 networks:
   server-network:
