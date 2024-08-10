@@ -2,6 +2,8 @@ import pytest
 
 from adapters.rabbitmq import RabbitMQAMQPAdapter, MQSession
 from adapters.database.sql.postgres import PostgresDatabase
+from adapters.http import HTTPRequestAdapter
+from adapters.database.nosql.mongo import MongoDatabase
 
 
 @pytest.fixture
@@ -34,3 +36,17 @@ def postgres_database():
         "users",
         "test"
     )
+
+
+@pytest.fixture
+def mongo_database():
+    return MongoDatabase(
+        "mongodb://root:example@localhost:27017/",
+        "test_database",
+        "users"
+    )
+
+
+@pytest.fixture
+def http_adapter():
+    return HTTPRequestAdapter("https://jsonplaceholder.typicode.com")

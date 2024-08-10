@@ -123,7 +123,7 @@ class PostgresDatabase(DatabasePort):
             for key, value in data.items():
                 setattr(record, key, value)
             self.session.commit()
-            return record.id
+            return self.get(record.id)
         return None
 
     def delete(self, id: str):
