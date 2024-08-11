@@ -1,3 +1,5 @@
+from os import environ
+
 from sqlalchemy import create_engine, text, MetaData, Table, Column, Integer, String, DateTime, func
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy.ext.declarative import declarative_base
