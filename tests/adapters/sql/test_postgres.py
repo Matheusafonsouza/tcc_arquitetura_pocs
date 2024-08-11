@@ -23,6 +23,11 @@ def test_postgres_database_update(postgres_database):
     assert result.get("name") == "test123"
 
 
+def test_postgres_database_update_without_record(postgres_database):
+    result = postgres_database.update("123321", {"name": "test123"})
+    assert result is None
+
+
 def test_postgres_database_get(postgres_database):
     user_id = postgres_database.create({"name": "test"}).get("id")
     result = postgres_database.get(user_id)
