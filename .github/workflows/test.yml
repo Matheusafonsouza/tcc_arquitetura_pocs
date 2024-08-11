@@ -18,10 +18,10 @@ jobs:
         run: pip install pytest pytest-cov && pip install -r services/server1/requirements.txt
 
       - name: Build databases and rabbitMQ
-        run: docker-compose up -d postgres mongo rabbitmq
+        run: docker compose up -d postgres mongo rabbitmq
 
       - name: Run migrations
-        run: docker compose up alembic
+        run: docker compose up tables
 
       - name: Run tests
         run: pytest -v --cov --cov-report=xml --cov-report=html
