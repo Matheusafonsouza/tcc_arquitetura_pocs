@@ -27,14 +27,7 @@ class User(Base):
     name = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
-    def to_dict(self):
-        """Convert instance to a dictionary."""
-        return {
-            'id': self.id,
-            'name': self.name,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
+
 
 # Define the books table in serviceOneSchema
 class Book(Base):
@@ -46,15 +39,6 @@ class Book(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
-    def to_dict(self):
-        """Convert instance to a dictionary."""
-        return {
-            'id': self.id,
-            'title': self.title,
-            'year': self.year,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
     
 class Movie(Base):
     __tablename__ = 'movies'
@@ -65,15 +49,6 @@ class Movie(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
-    def to_dict(self):
-        """Convert instance to a dictionary."""
-        return {
-            'id': self.id,
-            'title': self.title,
-            'year': self.year,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
     
 class TvShow(Base):
     __tablename__ = 'tv_shows'
@@ -85,16 +60,6 @@ class TvShow(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
-    def to_dict(self):
-        """Convert instance to a dictionary."""
-        return {
-            'id': self.id,
-            'title': self.title,
-            'year': self.year,
-            'episodes': self.episodes,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
 
 class PostgresDatabase(DatabasePort):
     def __init__(self, database_uri: str, table: str, schema: str):
@@ -110,11 +75,18 @@ class PostgresDatabase(DatabasePort):
             "tv_shows": TvShow,
         }.get(table)
 
+    def to_dict(self, row: Base):
+        print('maia', type(row))
+        return {
+            field.name: getattr(row, field.name)
+            for field in row.__table__.c
+        }
+
     def create(self, data: dict):
         insert = self.table(**data)
         self.session.add(insert)
         self.session.commit()
-        return insert.to_dict()
+        return self.to_dict(insert)
 
     def update(self, id: str, data: dict):
         record = self.session.query(self.table).filter(self.table.id == id).one_or_none()
@@ -135,4 +107,4 @@ class PostgresDatabase(DatabasePort):
         record = self.session.query(self.table).filter(self.table.id == id).one_or_none()
         if not record:
             return None
-        return record.to_dict()
+        return self.to_dict(record)
