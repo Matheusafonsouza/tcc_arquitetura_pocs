@@ -5,9 +5,9 @@ ENV PYTHONPATH "${PYTHONPATH}:/code/"
 
 WORKDIR /code
 
-ADD adapters /code/adapters/
-ADD ports /code/ports/
-ADD services/server1 /code/services/server1/
+COPY adapters /code/adapters/
+COPY ports /code/ports/
+COPY services/server1 /code/services/server1/
 
 RUN pip install --no-cache-dir -r /code/services/server1/requirements.txt
 

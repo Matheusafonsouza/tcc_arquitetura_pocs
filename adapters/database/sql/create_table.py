@@ -3,7 +3,11 @@ from sqlalchemy.schema import CreateSchema
 from sqlalchemy.ext.declarative import declarative_base
 
 # Database configuration
-DATABASE_URL = 'postgresql://root:root@postgres:5432/database'
+DATABASE_URL = (
+    f"postgresql://{environ['PG_USER']}:"
+    f"{environ['PG_PASS']}@{environ['PG_HOST']}:"
+    f"{environ['PG_PORT']}/{environ['PG_DB']}"
+)
 
 # Create an engine
 engine = create_engine(DATABASE_URL, echo=True)
@@ -38,23 +42,23 @@ class Book(Base):
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
 class Movie(Base):
-  __tablename__ = 'movies'
-  __table_args__ = {'schema': 'serviceTwoSchema'}
-  id = Column(Integer, primary_key=True)
-  title = Column(String, nullable=False)
-  year = Column(Integer, nullable=False)
-  created_at = Column(DateTime, nullable=False, server_default=func.now())
-  updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    __tablename__ = 'movies'
+    __table_args__ = {'schema': 'serviceTwoSchema'}
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
 class TvShow(Base):
-  __tablename__ = 'tv_shows'
-  __table_args__ = {'schema': 'serviceThreeSchema'}
-  id = Column(Integer, primary_key=True)
-  title = Column(String, nullable=False)
-  year = Column(Integer, nullable=False)
-  episodes = Column(Integer, nullable=False)
-  created_at = Column(DateTime, nullable=False, server_default=func.now())
-  updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    __tablename__ = 'tv_shows'
+    __table_args__ = {'schema': 'serviceThreeSchema'}
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    episodes = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     
 # Create the tables
 Base.metadata.create_all(engine)

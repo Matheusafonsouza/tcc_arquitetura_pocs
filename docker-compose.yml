@@ -100,6 +100,12 @@ services:
     build:
       context: .
       dockerfile: services/server1/Dockerfile
+    environment:
+      PG_PASS: root
+      PG_USER: root
+      PG_DB: database
+      PG_HOST: postgres
+      PG_PORT: 5432 
     volumes:
       - "./:/code/"
     container_name: tables

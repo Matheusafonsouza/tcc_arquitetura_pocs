@@ -100,8 +100,7 @@ class PostgresDatabase(DatabasePort):
     def __init__(self, database_uri: str, table: str, schema: str):
         self.table = self.get_table(table)
         engine = create_engine(database_uri)
-        Session = sessionmaker(bind=engine)
-        self.session = Session()
+        self.session = sessionmaker(bind=engine)()
 
     def get_table(self, table: str):
         return {
