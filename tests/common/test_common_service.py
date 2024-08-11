@@ -20,7 +20,7 @@ def test_ping_server():
     http_adapter_mock = MagicMock()
     amqp_adapter_mock = MagicMock()
 
-    server_url = "http://test.com"
+    server_url = "https://test.com"
     response_content = { "ok": True }
     response_mock = {
         "status_code": 200,
