@@ -1,6 +1,6 @@
 # TCC Arquitetura POCs
 
-Repositório para as implementações das provas de conceito relacionadas ao Trabalho de Conclusão de Curso.
+Repositório para as implementações das provas de conceito relacionadas ao Trabalho de Conclusão de Curso para observar os pontos ao longo do desenvolvimento de uma aplicação que combina Arquitetura de Microsserviços e Aquitetura Portas e Adaptadores, considerando como foco Reutilização de Software.
 
 ## ☕ Rodando
 
